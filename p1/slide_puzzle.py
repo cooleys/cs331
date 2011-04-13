@@ -47,49 +47,43 @@ def s_gen(node):
 		for y in range(m):
 			if state[x][y] == '0':
 				loc = (x,y)
-	
+				break
+
 	new_state = copy.deepcopy(state)
-	
+	x,y = loc
 	possible = map(lambda (i, j): (x + i, y + j), moves)
 	possible = filter(lambda (i, j): 0 <= i < n and 0 <= j < m, possible)
-	print possible
 
 	for (x,y) in possible:
 		i, j = loc
 		new_state[i][j] = state[x][y]
 		new_state[x][y] = '0'
 		results.append((new_state, str(x) + ", " + str(y) + " to " + str(i) + ", " + str(j)))
-		#print "Appending: " + str(new_state)
 		new_state = copy.deepcopy(state)
 
-	#print results
 	return results
 
 def bfs(s, e):
 	n = Node(None, "bfs_init", s, 0, 1)
-	print n
-	expand(n)
-'''	
+	
 	fringe = []
 	fringe.append(n)
 	while fringe != []:
 		node = fringe.pop(0)
-		print node
-		if node.state not in checked:
-			if node.state == e:
-				print "Goal"
-				return node
-			else:
-				checked.append(node.state)
-				ex = []
-				for exp in expand(node):
-					print exp
-					ex = [exp] + ex
-				fringe = ex + fringe
-				print "Fringe: "
-				print fringe
+		print "Current Node = " + str(node)
+		
+		checked.append(node.state)
+		#print checked
+		for ex in expand(node):
+			if ex.state == e:
+				print "Goal!"
+				return ex
+			if ex.state not in checked:
+				fringe.append(ex)
+		print "Fringe: "
+		print fringe
 	return None
-'''
+
 def dfs(s, e):
 	n = Node(None, "Initial", s, 0, 1)
 	return 0
