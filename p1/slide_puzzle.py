@@ -3,6 +3,8 @@ import sys
 import copy
 
 checked = []
+n = 3
+m = 3
 
 class Node:
 	def __init__(self, parent, action, state, path_cost, depth):
@@ -29,60 +31,45 @@ def parseFile(file):
 def expand(node):
 	successors = []
 
-	for result, action in suc_fun(node):
+	for result, action in s_gen(node):
 		if result not in checked:
 			new_node = Node(node, action, result, node.cost+1, node.depth+1)
 			successors.append(new_node)
 	return successors
 
-def suc_fun(node):
+def s_gen(node):
+	moves = ((1,0),(0,1),(-1,0),(0,-1))
 	state = node.state
 	results = []
-	loc = []
-	for i in range(3):
-		for j in range(3):
-			if state[i][j] == '0':
-				loc = [i, j]
-				#print loc
+	loc = (0,0)
+
+	for x in range(n):
+		for y in range(m):
+			if state[x][y] == '0':
+				loc = (x,y)
+	
 	new_state = copy.deepcopy(state)
-	i = loc[0]
-	j = loc[1]
-	#print state
-	if j-1 >= 0:
-		new_state[i][j] = new_state[i][j-1]
-		new_state[i][j-1] = '0'
-		results.append((new_state, str(i) + ", " + str(j-1) + " to " + str(i) + ", " + str(j)))
-		#print "Appending1: " + str(new_state)
-		new_state = copy.deepcopy(state)
-		#print state
-		#print new_state
-	if j+1 <= 2:
-		new_state[i][j] = new_state[i][j+1]
-		new_state[i][j+1] = '0'
-		results.append((new_state, str(i) + ", " + str(j+1) + " to " + str(i) + ", " + str(j)))
-		#print "Appending2: " + str(new_state)
-		new_state = copy.deepcopy(state)
-	if i-1 >= 0:
-		new_state[i][j] = new_state[i-1][j]
-		new_state[i-1][j] = '0'
-		results.append((new_state, str(i+1) + ", " + str(j) + " to " + str(i) + ", " + str(j)))
-		#print "Appending3: " + str(new_state)
-		new_state = copy.deepcopy(state)
-	if i+1 <= 2:
-		new_state[i][j] = new_state[i+1][j]
-		new_state[i+1][j] = '0'
-		results.append((new_state, str(i+1) + ", " + str(j) + " to " + str(i) + ", " + str(j)))
-		#print "Appending4: " + str(new_state)
+	
+	possible = map(lambda (i, j): (x + i, y + j), moves)
+	possible = filter(lambda (i, j): 0 <= i < n and 0 <= j < m, possible)
+	print possible
+
+	for (x,y) in possible:
+		i, j = loc
+		new_state[i][j] = state[x][y]
+		new_state[x][y] = '0'
+		results.append((new_state, str(x) + ", " + str(y) + " to " + str(i) + ", " + str(j)))
+		#print "Appending: " + str(new_state)
 		new_state = copy.deepcopy(state)
 
-	print results
+	#print results
 	return results
 
 def bfs(s, e):
 	n = Node(None, "bfs_init", s, 0, 1)
 	print n
 	expand(n)
-	'''
+'''	
 	fringe = []
 	fringe.append(n)
 	while fringe != []:
@@ -101,9 +88,8 @@ def bfs(s, e):
 				fringe = ex + fringe
 				print "Fringe: "
 				print fringe
-	'''
 	return None
-
+'''
 def dfs(s, e):
 	n = Node(None, "Initial", s, 0, 1)
 	return 0
