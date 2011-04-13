@@ -13,7 +13,9 @@ class Node:
 		self.depth = depth
 	
 	def __str__(self):
-		return self.action + " "+str(self.state)
+		return str(self.state)
+	def __repr__( self):
+		return str(self.state)
 
 def parseFile(file):
 	out = []
@@ -28,12 +30,9 @@ def expand(node):
 	successors = []
 
 	for result, action in suc_fun(node):
-		if result in checked:
-			return successors
-		new_node = Node(node, action, result, node.cost+1, node.depth+1)
-		#print new_node
-		successors.append(new_node)
-	#print successors
+		if result not in checked:
+			new_node = Node(node, action, result, node.cost+1, node.depth+1)
+			successors.append(new_node)
 	return successors
 
 def suc_fun(node):
@@ -76,33 +75,33 @@ def suc_fun(node):
 		#print "Appending4: " + str(new_state)
 		new_state = copy.deepcopy(state)
 
-	#print results
+	print results
 	return results
 
 def bfs(s, e):
 	n = Node(None, "bfs_init", s, 0, 1)
 	print n
-
+	expand(n)
+	'''
 	fringe = []
 	fringe.append(n)
 	while fringe != []:
 		node = fringe.pop(0)
 		print node
-		if node.state in checked:
-			print "Checked"
-			continue
-		if node.state == e:
-			print "Goal"
-			return node
-		else:
-			checked.append(node.state)
-			ex = []
-			for exp in expand(node):
-				print exp
-				ex = [exp] + ex
-			fringe = ex + fringe
-			print "Fringe: "
-			print fringe
+		if node.state not in checked:
+			if node.state == e:
+				print "Goal"
+				return node
+			else:
+				checked.append(node.state)
+				ex = []
+				for exp in expand(node):
+					print exp
+					ex = [exp] + ex
+				fringe = ex + fringe
+				print "Fringe: "
+				print fringe
+	'''
 	return None
 
 def dfs(s, e):
