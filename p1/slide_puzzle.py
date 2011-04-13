@@ -59,7 +59,9 @@ def s_gen(node):
 
 def bfs(s, e):
 	n = Node(None, "bfs_init", s, 0, 1)
-	
+	if s == e:
+		return n
+
 	fringe = []
 	fringe.append(n)
 	while fringe != []:
@@ -75,7 +77,9 @@ def bfs(s, e):
 	return None
 
 def dfs(s, e):
-	n = Node(None, "Initial", s, 0, 1)
+	n = Node(None, "def_init", s, 0, 1)
+	if s == e:
+		return n
 	
 	fringe = []
 	fringe.append(n)
@@ -91,7 +95,31 @@ def dfs(s, e):
 	print "No Goal :("
 	return None
 
-def iddfs(s, e):
+def iddfs(s, e):	
+	n = Node(None, "iidfs_init", s, 0, 1)
+	if s == e:
+		return n
+	global checked	
+	d = 1
+	fringe = []
+	fringe.append(n)
+	
+	while fringe != []:
+		node = fringe.pop(0)
+		checked.append(node.state)
+		for ex in expand(node):
+			if ex.state == e:
+				print "Goal!"
+				return ex
+			if ex.depth <= d:
+				fringe.insert(0,ex)
+		
+		if fringe == [] and node.depth >= d:
+			d += 1
+			del checked[:]
+			fringe.append(n)
+
+	print "No Goal :("
 	return None
 
 start = parseFile(sys.argv[1])
@@ -102,6 +130,8 @@ if mode == "bfs":
 	node = bfs(start, end)
 elif mode == "dfs":
 	node = dfs(start, end)
+elif mode == "iddfs":
+	node = iddfs(start, end)
 
 while node != None:
 	print node.state
