@@ -6,14 +6,17 @@ sys.setrecursionlimit(sys.getrecursionlimit()*4)
 checked = []
 n = 3
 m = 3
+n_e = 0
 
 class Node:
 	def __init__(self, parent, action, state, path_cost, depth):
+		global n_e
 		self.parent = parent
 		self.action = action
 		self.state = state
 		self.cost = path_cost
 		self.depth = depth
+		n_e += 1
 	
 	def __str__(self):
 		return str(self.state)
@@ -122,6 +125,13 @@ def iddfs(s, e):
 	print "No Goal :("
 	return None
 
+def a(s, e):
+	n = Node(None, "iidfs_init", s, 0, 1)
+	if s == e:
+		return n
+	
+	return None
+
 start = parseFile(sys.argv[1])
 end = parseFile(sys.argv[2])
 mode = sys.argv[3]
@@ -132,7 +142,10 @@ elif mode == "dfs":
 	node = dfs(start, end)
 elif mode == "iddfs":
 	node = iddfs(start, end)
+elif mode == "a":
+	node = a(start, end)
 
+print "Num expanded: " + str(n_e)
 while node != None:
 	print node.state
 	node = node.parent
