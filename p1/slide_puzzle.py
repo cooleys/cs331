@@ -47,19 +47,16 @@ def s_gen(node):
 		for y in range(m):
 			if state[x][y] == '0':
 				loc = (x,y)
-				break
 
-	new_state = copy.deepcopy(state)
 	x,y = loc
 	possible = map(lambda (i, j): (x + i, y + j), moves)
 	possible = filter(lambda (i, j): 0 <= i < n and 0 <= j < m, possible)
 
-	for (x,y) in possible:
-		i, j = loc
-		new_state[i][j] = state[x][y]
-		new_state[x][y] = '0'
-		results.append((new_state, str(x) + ", " + str(y) + " to " + str(i) + ", " + str(j)))
+	for (i,j) in possible:
 		new_state = copy.deepcopy(state)
+		new_state[x][y] = state[i][j]
+		new_state[i][j] = '0'
+		results.append((new_state, str(i) + ", " + str(j) + " to " + str(x) + ", " + str(y)))
 
 	return results
 
