@@ -1,6 +1,7 @@
 import csv
 import sys
 import copy
+from heapq import heappush, heappop
 
 sys.setrecursionlimit(sys.getrecursionlimit()*4)
 checked = []
@@ -40,7 +41,10 @@ def expand(node):
 	return successors
 
 def s_gen(node):
-	moves = ((-1,0),(1,0),(0,-1),(0,1))
+	moves = ((-1,0),(0,1),(1,0),(0,-1))
+	if not mode == "bfs": 
+		moves = ((0,-1),(1,0),(0,1),(-1,0))
+	
 	results = []
 	loc = (0,0)
 
@@ -72,11 +76,11 @@ def bfs(s, e):
 		checked.append(node.state)
 		for ex in expand(node):
 			if ex.state == e:
-				print "Goal!"
+				f.write("Goal!\n")
 				return ex
 			fringe.append(ex)
 
-	print "No Goal :("
+	f.write("No Goal :(")
 	return None
 
 def dfs(s, e):
@@ -91,11 +95,11 @@ def dfs(s, e):
 		checked.append(node.state)
 		for ex in expand(node):
 			if ex.state == e:
-				print "Goal!"
+				f.write("Goal!\n")
 				return ex
 			fringe.insert(0,ex)
 
-	print "No Goal :("
+	f.write("No Goal :(")
 	return None
 
 def iddfs(s, e):	
@@ -112,7 +116,7 @@ def iddfs(s, e):
 		checked.append(node.state)
 		for ex in expand(node):
 			if ex.state == e:
-				print "Goal!"
+				f.write("Goal!\n")
 				return ex
 			if ex.depth <= d:
 				fringe.insert(0,ex)
@@ -122,7 +126,7 @@ def iddfs(s, e):
 			del checked[:]
 			fringe.append(n)
 
-	print "No Goal :("
+	f.write("No Goal :(")
 	return None
 
 def a(s, e):
@@ -130,11 +134,43 @@ def a(s, e):
 	if s == e:
 		return n
 	
+	fringe = []
+
+	g_score = 0
+	h_score = a_heur(n.state, e)
+	f_score = h_score
+
+	heappush(fringe, (f_score, n))
+	
+	while fringe != []:
+		score, node = heappop(fringe)
+		if node.state == e:
+			return node
+		checked.append(node.state)
+		for exp in expand(node):
+			exp.score = exp.depth + a_heur(exp.state, e)
+			heappush(fringe, (exp.score, exp))
 	return None
+
+
+def a_heur(state, e):
+    total_score = 0
+    for i in range(3):
+        for j in range(3):
+            temp_score = 0
+            value = state[i][j]
+            for h in range(3):
+                for k in range(3):
+                    if e[h][k] == value:
+                        temp_score = abs( h - i ) + abs ( k - j )
+            total_score += temp_score
+    return total_score
+
 
 start = parseFile(sys.argv[1])
 end = parseFile(sys.argv[2])
 mode = sys.argv[3]
+f = open('log', 'w')
 
 if mode == "bfs":
 	node = bfs(start, end)
@@ -145,7 +181,7 @@ elif mode == "iddfs":
 elif mode == "a":
 	node = a(start, end)
 
-print "Num expanded: " + str(n_e)
+f.write("Num expanded: "+str(n_e)+"\n")
 while node != None:
-	print node.state
+	f.write(str(node)+"\n")
 	node = node.parent
