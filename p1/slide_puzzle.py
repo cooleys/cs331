@@ -185,3 +185,8 @@ f.write("Num expanded: "+str(n_e)+"\n")
 while node != None:
 	f.write(str(node)+"\n")
 	node = node.parent
+f.close()
+
+f = open('log', 'r')
+for line in f:
+	print line,
