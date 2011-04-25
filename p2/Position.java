@@ -1,4 +1,3 @@
-package edu.oregonstate.eecs.cs331.assn2;
 
 /**
  * A simple class to store the position of a move.

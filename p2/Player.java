@@ -1,7 +1,6 @@
 /**
  * 
  */
-package edu.oregonstate.eecs.cs331.assn2;
 
 /**
  * This is the interface for the game player.

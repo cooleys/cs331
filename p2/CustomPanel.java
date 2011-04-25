@@ -1,5 +1,3 @@
-package edu.oregonstate.eecs.cs331.assn2;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;

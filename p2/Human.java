@@ -1,4 +1,3 @@
-package edu.oregonstate.eecs.cs331.assn2;
 
 /**
  * This class defines the Player Interface implemenation for human players. 
