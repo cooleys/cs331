@@ -336,4 +336,19 @@ public class TicTacToeBoard {
 		out.print("\n\n");
 		out.flush();
 	}
+	
+	public String toString() {
+		String s = "";
+		for (int row = 0; row < SIZE; row++) {
+			for (int col = 0; col < SIZE; col++) {
+				s = s+square[row][col];
+				if( col == (SIZE-1)) {
+					s = s+"\n";
+				} else {
+					s = s+",";
+				}
+			}
+		}
+		return s+"\n";
+	}
 }

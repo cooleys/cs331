@@ -161,7 +161,7 @@ public class GameFrame extends JFrame {
 			playerX = new RandomPlayer();
 			break;
 		case Player.MINIMAX_PLAYER:
-			playerX = new MiniMax();
+			playerX = new MiniMax(0);
 			break;
 		default:
 			playerX = new Human();
@@ -173,7 +173,7 @@ public class GameFrame extends JFrame {
 			playerO = new RandomPlayer();
 			break;
 		case Player.MINIMAX_PLAYER:
-			playerO = new MiniMax();
+			playerO = new MiniMax(1);
 			break;
 		default:
 			playerO = new Human();
@@ -301,8 +301,7 @@ public class GameFrame extends JFrame {
 				throw new Exception("Unrecognized player type");
 			}
 
-			GameFrame application = new GameFrame(player1Type,
-					player2Type);
+			GameFrame application = new GameFrame(player1Type, player2Type);
 			application.playGame();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
