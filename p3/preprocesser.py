@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+
+# Sarah Cooley
+# CS331 Spring 2011
+
 import csv
 import sys
 import os
@@ -43,6 +48,3 @@ out = csv.writer(open(pre_proc, 'w'))
 index(vocab_file)
 parse_reviews(training_file, "pos")
 parse_reviews(training_file, "neg")
-
-
-#f = open(pre_proc, 'w')
