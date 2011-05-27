@@ -42,9 +42,15 @@ vocab_file = "vocabulary.txt"
 training_file = sys.argv[1]
 testing_file = sys.argv[2]
 
-pre_proc = "training.txt"
+train = "training.txt"
+test = "testing.txt"
 
-out = csv.writer(open(pre_proc, 'w'))
+out = csv.writer(open(train, 'w'))
 index(vocab_file)
 parse_reviews(training_file, "pos")
 parse_reviews(training_file, "neg")
+
+out = csv.writer(open(test, 'w'))
+index(vocab_file)
+parse_reviews(testing_file, "pos")
+parse_reviews(testing_file, "neg")
