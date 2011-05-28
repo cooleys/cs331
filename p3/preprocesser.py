@@ -23,7 +23,7 @@ def parse_reviews(i, val):
 	for file in os.listdir(i+"/"+val+"/"):
 		f = open(os.path.join(i+"/"+val+"/", file), 'r')
 		rev_w = re.findall('\w+', f.read().lower())
-		l = [0]*(len(words)-1)
+		l = [0]*(len(words))
 		for w in rev_w:	
 			try:
 				ind = words.index(w)
