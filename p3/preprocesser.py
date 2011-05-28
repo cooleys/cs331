@@ -12,14 +12,14 @@ import re
 sys.setrecursionlimit(sys.getrecursionlimit()*4)
 words = []
 
-def index(i):
+def index(i, o):
 	f = open(i, 'r')
 	for w in f.readlines():
 		words.append(w.rstrip().lower())
-	out.writerow(words+["ClassLabel"])	
+	o.writerow(words+["ClassLabel"])	
 	f.close()
 
-def parse_reviews(i, val):
+def parse_reviews(i, o, val):
 	for file in os.listdir(i+"/"+val+"/"):
 		f = open(os.path.join(i+"/"+val+"/", file), 'r')
 		rev_w = re.findall('\w+', f.read().lower())
@@ -32,7 +32,7 @@ def parse_reviews(i, val):
 				pass
 		f.close()
 		l.append(val)
-		out.writerow(l)
+		o.writerow(l)
 	
 if len(sys.argv) != 3:
 	print "Useage: python classifier.py < training data file > < testing data file >"
@@ -45,12 +45,16 @@ testing_file = sys.argv[2]
 train = "training.txt"
 test = "testing.txt"
 
-out = csv.writer(open(train, 'w'))
-index(vocab_file)
-parse_reviews(training_file, "pos")
-parse_reviews(training_file, "neg")
+f = open(train, 'w')
+out = csv.writer(f)
+index(vocab_file, out)
+parse_reviews(training_file, out, "pos")
+parse_reviews(training_file, out, "neg")
+f.close()
 
-out = csv.writer(open(test, 'w'))
-index(vocab_file)
-parse_reviews(testing_file, "pos")
-parse_reviews(testing_file, "neg")
+f = open(test, 'w')
+out2 = csv.writer(f)
+out2.writerow(words+["ClassLabel"])	
+parse_reviews(testing_file, out2, "pos")
+parse_reviews(testing_file, out2, "neg")
+f.close

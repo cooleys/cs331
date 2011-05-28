@@ -10,52 +10,43 @@ from math import log
 
 training	= sys.argv[1]
 testing		= sys.argv[2]
-pos_dict	= {}
-neg_dict	= {}
 
-reader = csv.reader(open(training))
-tester = csv.reader(open(testing))
+train = csv.reader(open(training))
+test = csv.reader(open(testing))
 
-fields = reader.next()
-tester.next()
-length = len(fields)
+words = train.next()
+len(test.next())
+l = len(words)-1
 
-pos_count = []
-neg_count = []
-for i in range(length):
-	neg_count.append(0)
-	pos_count.append(0)
+pos	= [0]*l
+neg = [0]*l
+recs = 0
+pos_r = 0
+neg_r = 0
 
-for row in reader:
-	if row[length-1] == "pos":
-		row[length-1] = 1
-		for i in range(length):
-			pos_count[i] = pos_count[i] + int(row[i])
-	elif row[length-1] == "neg":
-		row[length-1] = 1
-		for i in range(length):
-			neg_count[i] = neg_count[i] + int(row[i])
+for row in train:
+	if row[l] == "pos":
+		pos_r = pos_r + 1
+		for i in range(l):
+			pos[i] = pos[i] + int(row[i])
+	elif row[l] == "neg":
+		neg_r = neg_r + 1
+		for i in range(l):
+			neg[i] = neg[i] + int(row[i])
+recs = pos_r + neg_r
 
-probs = {}
-total_recs = neg_count[length-1] + pos_count[length-1]
-for i in range(length-1):
+prob = {}
+for i in range(l):
 	# Stores in the format [ p(!found | neg ), p(!found | pos ), p(found | neg), p(found | pos)]
-	probs[fields[i]] = [ \
-			float(neg_count[length-1] - neg_count[i] + 1) / float(neg_count[length-1] + 2),\
-			float(pos_count[length-1] - pos_count[i] + 1)/ float(pos_count[length-1] + 2),\
-			float(neg_count[i] + 1) / float(neg_count[length-1] + 2),\
-			float(pos_count[i] + 1) / float(pos_count[length-1] + 2)\
-			]
+	prob[words[i]] = [ \
+			float(neg_r - neg[i] + 1) / float(neg_r + 2),\
+			float(pos_r - pos[i] + 1)/ float(pos_r + 2),\
+			float(neg[i] + 1) / float(neg_r + 2),\
+			float(pos[i] + 1) / float(pos_r + 2) ]
 
-# Stores in the format [ prob neg, prob pos ]
-probs[fields[length-1]] = [ \
-		float(neg_count[length-1]) / float(total_recs),\
-		float(pos_count[length-1]) / float(total_recs)\
-		]
-
-#file = open(testing, 'r')
-#text = file.read()
-#text = text.rsplit()
+prob["totals"] = [ \
+		float(neg_r) / float(recs),\
+		float(pos_r) / float(recs) ]
 
 pos_pred = 0
 neg_pred = 0
@@ -63,22 +54,23 @@ neg_pred = 0
 pos_corr = 0
 neg_corr = 0
 
-for row in tester:
-	prob_pos = log(probs[fields[length-1]][1])
-	prob_neg = log(probs[fields[length-1]][0])
-	for i in range(length-1):
-		if row[i] == '1':
-			prob_pos = log(probs[fields[i]][3]) + prob_pos
-			prob_neg = log(probs[fields[i]][2]) + prob_neg
+for row in test:
+	prob_pos = log(prob["totals"][1])
+	prob_neg = log(prob["totals"][0])
 
+	for i in range(l):
+		if row[i] == '1':
+			prob_pos = log(prob[words[i]][3]) + prob_pos
+			prob_neg = log(prob[words[i]][2]) + prob_neg
+	
 	if prob_pos > prob_neg:
 		pos_pred = pos_pred + 1
-		if row[length-1] == "pos":
+		if row[l] == "pos":
 			pos_corr = pos_corr + 1
 	else:
 		neg_pred = neg_pred + 1
-		if row[length-1] == "neg":
+		if row[l] == "neg":
 			neg_corr = neg_corr + 1
 
-print "Positive correctly guessed: " + str(float(pos_corr) / float(pos_pred))
-print "Negative correctly guessed: " + str(float(neg_corr) / float(neg_pred))
+print "Positive accuracy: " + str(float(pos_corr) / float(pos_pred))
+print "Negative accuracy: " + str(float(neg_corr) / float(neg_pred))
